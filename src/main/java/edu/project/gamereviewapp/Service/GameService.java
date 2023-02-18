@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,7 +26,7 @@ public class GameService {
         return game;
     }
     @Transactional
-    public void createGame(String name, String developer, List<Genre> genre, OffsetDateTime releaseDate, List<Review> reviews){
+    public void createGame(String name, String developer, List<Genre> genre, LocalDate releaseDate, List<Review> reviews){
 
         Game game =new Game(name,developer,genre,releaseDate,reviews);
         gameRepository.save(game);

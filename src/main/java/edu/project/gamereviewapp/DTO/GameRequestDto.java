@@ -1,9 +1,12 @@
 package edu.project.gamereviewapp.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.project.gamereviewapp.Entity.Review;
 import edu.project.gamereviewapp.Enum.Genre;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 @Getter
@@ -12,7 +15,9 @@ public class GameRequestDto {
     private String gameName;
     private String developer;
     private List<Genre> genre;
-    private OffsetDateTime releaseDate;
+    @JsonSerialize(as = LocalDate.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate releaseDate;
     private List<Review> reviews;
 
     @Override

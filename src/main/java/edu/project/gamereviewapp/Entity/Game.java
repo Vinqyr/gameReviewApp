@@ -5,6 +5,7 @@ import edu.project.gamereviewapp.Enum.Genre;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -33,12 +34,12 @@ public class Game {
     private List<Genre> genre;
 
 
-    private OffsetDateTime releaseDate;
+    private LocalDate releaseDate;
 
     @OneToMany(mappedBy = "gameId")
     private List<Review> reviews;
 
-    public Game(String name, String developer, List<Genre> genre, OffsetDateTime releaseDate, List<Review> reviews) {
+    public Game(String name, String developer, List<Genre> genre, LocalDate releaseDate, List<Review> reviews) {
         this.name = name;
         this.developer = developer;
         this.genre = genre;

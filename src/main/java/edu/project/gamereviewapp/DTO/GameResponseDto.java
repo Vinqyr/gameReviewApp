@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class GameResponseDto {
     private String gameName;
     private String developer;
     private List<Genre> genre;
-    private OffsetDateTime releaseDate;
+    private LocalDate releaseDate;
     private List<Review> reviews;
     public GameResponseDto(Game game) {
         gameName = game.getName();
