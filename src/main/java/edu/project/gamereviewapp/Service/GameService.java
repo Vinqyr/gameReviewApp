@@ -28,8 +28,8 @@ public class GameService {
     }
     @Transactional
     public void createGame(String name, String developer, List<Genre> genre, OffsetDateTime releaseDate, List<Review> reviews){
-        List<String> collect = genre.stream().map(Enum::name).collect(Collectors.toList());
-        Game game =new Game(name,developer,collect,releaseDate,reviews);
+
+        Game game =new Game(name,developer,genre,releaseDate,reviews);
         gameRepository.save(game);
     }
     @Transactional

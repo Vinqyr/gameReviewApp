@@ -30,7 +30,7 @@ public class Game {
 
     @Enumerated(EnumType.STRING)
     @ElementCollection
-    private List<String> genre;
+    private List<Genre> genre;
 
 
     private OffsetDateTime releaseDate;
@@ -38,7 +38,7 @@ public class Game {
     @OneToMany(mappedBy = "gameId")
     private List<Review> reviews;
 
-    public Game(String name, String developer, List<String> genre, OffsetDateTime releaseDate, List<Review> reviews) {
+    public Game(String name, String developer, List<Genre> genre, OffsetDateTime releaseDate, List<Review> reviews) {
         this.name = name;
         this.developer = developer;
         this.genre = genre;

@@ -16,7 +16,7 @@ import java.util.List;
 public class GameResponseDto {
     private String gameName;
     private String developer;
-    private List<String> genre;
+    private List<Genre> genre;
     private OffsetDateTime releaseDate;
     private List<Review> reviews;
     public GameResponseDto(Game game) {
