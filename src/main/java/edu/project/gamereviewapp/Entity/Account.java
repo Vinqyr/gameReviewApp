@@ -17,6 +17,9 @@ public class Account {
     private String lastName;
 
 
+    private String phoneNumber;
+
+
     public Account() {
 
     }

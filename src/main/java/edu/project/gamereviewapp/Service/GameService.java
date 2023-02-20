@@ -26,9 +26,9 @@ public class GameService {
         return game;
     }
     @Transactional
-    public void createGame(String name, String developer, List<Genre> genre, LocalDate releaseDate, List<Review> reviews){
+    public void createGame(String name, String developer, Genre genre, LocalDate releaseDate, List<Review> reviews){
 
-        Game game =new Game(name,developer,genre,releaseDate,reviews);
+        Game game =new Game(name,developer,(Genre) genre,releaseDate,reviews);
         gameRepository.save(game);
     }
     @Transactional

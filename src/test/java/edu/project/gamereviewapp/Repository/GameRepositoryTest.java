@@ -30,13 +30,10 @@ class GameRepositoryTest {
     @Test
     void saveGameTest() {
         //Given
-        List<Genre> genres = new ArrayList<>();
-        List<Review> review = new ArrayList<>();
 
-        review.add(new Review());
-        genres.add(Genre.STRATEGY);
 
-        Game game = new Game("Dota2", "Volvo", genres, LocalDate.now(), review);
+
+        Game game = new Game("Dota2", "Volvo", Genre.STRATEGY, LocalDate.now(), new ArrayList<Review>());
         //When
         testGameRepository.save(game);
         //Then

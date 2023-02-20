@@ -1,7 +1,5 @@
 package edu.project.gamereviewapp.DTO;
 
-import edu.project.gamereviewapp.Entity.Game;
-import lombok.Data;
 import lombok.Getter;
 
 import java.math.BigDecimal;

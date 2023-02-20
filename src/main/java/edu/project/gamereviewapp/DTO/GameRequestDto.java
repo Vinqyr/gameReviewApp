@@ -7,14 +7,13 @@ import edu.project.gamereviewapp.Enum.Genre;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.List;
 @Getter
 public class GameRequestDto {
     private Long id;
     private String gameName;
     private String developer;
-    private List<Genre> genre;
+    private Genre genre;
     @JsonSerialize(as = LocalDate.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;

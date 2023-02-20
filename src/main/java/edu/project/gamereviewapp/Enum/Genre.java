@@ -1,19 +1,38 @@
 package edu.project.gamereviewapp.Enum;
 
 
-public enum Genre {
-    ACTION("ACTION"),
-    RPG("RPG"),
-    STRATEGY("STRATEGY"),
-    HORROR("HORROR");
+import com.fasterxml.jackson.annotation.JsonValue;
+import edu.project.gamereviewapp.util.AbstractEnumConverter;
+import edu.project.gamereviewapp.util.PersistableEnum;
 
-    private String genre;
+public enum Genre implements PersistableEnum<String> {
+    ACTION("action"),
+    RPG("rpg"),
+    STRATEGY("strategy"),
+    HORROR("horror");
 
-    Genre(String genre) {
-        this.genre = genre;
+    private final String value;
+
+    private Genre(String value) {
+        this.value = value;
     }
 
     public static Genre parseString(String genre){
         return Genre.valueOf(genre.toUpperCase());
+    }
+    @JsonValue
+    public String getGenre(){
+        return value;
+    }
+
+    @Override
+    public String getValue() {
+        return value;
+    }
+
+    public static class Converter extends AbstractEnumConverter<Genre, String> {
+        public Converter() {
+            super(Genre.class);
+        }
     }
 }

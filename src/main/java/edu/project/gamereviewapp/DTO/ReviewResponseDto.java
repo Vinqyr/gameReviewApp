@@ -1,17 +1,15 @@
 package edu.project.gamereviewapp.DTO;
 
-import edu.project.gamereviewapp.Entity.Game;
 import edu.project.gamereviewapp.Entity.Review;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
 @Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ReviewResponseDto {
     private  Long id;
     private  BigDecimal score;

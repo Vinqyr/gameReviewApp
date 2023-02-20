@@ -5,10 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @ToString
 @Table(name = "review")
@@ -35,5 +32,9 @@ public class Review {
         this.summary = summary;
         this.similarGames = similarGames;
         this.gameId = gameId;
+    }
+
+    public Review() {
+
     }
 }
