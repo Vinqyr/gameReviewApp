@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Getter
 public class ReviewRequestDto {
     private  Long id;
-    private  BigDecimal score;
+    private  Double score;
     private  String summary;
     private  String similarGames;
     private Long gameId;

@@ -1,38 +1,36 @@
 package edu.project.gamereviewapp.Enum;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import edu.project.gamereviewapp.util.AbstractEnumConverter;
-import edu.project.gamereviewapp.util.PersistableEnum;
 
-public enum Genre implements PersistableEnum<String> {
+public enum Genre  {
     ACTION("action"),
     RPG("rpg"),
     STRATEGY("strategy"),
-    HORROR("horror");
+    HORROR("horror"),
+    MOBA("moba");
 
     private final String value;
 
-    private Genre(String value) {
+    Genre(String value) {
         this.value = value;
     }
 
-    public static Genre parseString(String genre){
-        return Genre.valueOf(genre.toUpperCase());
-    }
-    @JsonValue
-    public String getGenre(){
-        return value;
-    }
 
-    @Override
+
+    @JsonValue
     public String getValue() {
         return value;
     }
 
-    public static class Converter extends AbstractEnumConverter<Genre, String> {
-        public Converter() {
-            super(Genre.class);
+    @JsonCreator
+    public static Genre fromValue(String value){
+        for(Genre genre: Genre.values()){
+            if (genre.value.equals(value.toLowerCase()))
+                return genre;
         }
+        throw new RuntimeException("KEPKA");
     }
+
 }

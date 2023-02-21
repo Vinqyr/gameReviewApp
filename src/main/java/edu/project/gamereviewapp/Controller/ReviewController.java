@@ -2,14 +2,17 @@ package edu.project.gamereviewapp.Controller;
 
 import edu.project.gamereviewapp.DTO.ReviewRequestDto;
 import edu.project.gamereviewapp.DTO.ReviewResponseDto;
-import edu.project.gamereviewapp.Entity.Review;
 import edu.project.gamereviewapp.Service.ReviewService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/review")
+@RequestMapping("/reviews")
 public class ReviewController {
     private final ReviewService reviewService;
     private final ModelMapper modelMapper;
@@ -20,24 +23,28 @@ public class ReviewController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/{reviewId}")
-    public ReviewResponseDto getReview(@PathVariable Long reviewId) {
-        return new ReviewResponseDto(reviewService.getReviewById(reviewId));
+    @GetMapping("/game/{gameId}")
+    public ResponseEntity<List<ReviewResponseDto>> findAllByGameId(@PathVariable Long gameId){
+        return new ResponseEntity<>(reviewService.findAllByGameId(gameId), HttpStatus.OK);
     }
 
-    @PostMapping("/")
-    public void createReview(@RequestBody ReviewRequestDto reviewRequestDTO) {
-        reviewService.createReview(reviewRequestDTO.getScore(), reviewRequestDTO.getSummary(),
-                reviewRequestDTO.getSimilarGames(),reviewRequestDTO.getGameId());
+    @GetMapping("/{id}")
+    public ResponseEntity<ReviewResponseDto> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(reviewService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{reviewId}")
-    public ReviewResponseDto updateReview(@PathVariable Long reviewId, @RequestBody ReviewRequestDto reviewRequestDTO) {
-        return new ReviewResponseDto(reviewService.updateReview(reviewId,modelMapper.map(reviewRequestDTO, Review.class)));
+    @PostMapping
+    public ResponseEntity<ReviewResponseDto> save(@RequestBody ReviewRequestDto reviewRequestDTO) {
+        return new ResponseEntity<>(reviewService.save(reviewRequestDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{gameId}")
-    public void deleteReview(@PathVariable Long reviewId) {
-        reviewService.deleteReviewById(reviewId);
+    @PutMapping("/{id}")
+    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long id, @RequestBody ReviewRequestDto reviewRequestDTO) {
+        return new ResponseEntity<>(reviewService.update(id, reviewRequestDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ReviewResponseDto> deleteReviewById(@PathVariable Long id) {
+        return new ResponseEntity<>(reviewService.deleteReviewById(id), HttpStatus.OK);
     }
 }

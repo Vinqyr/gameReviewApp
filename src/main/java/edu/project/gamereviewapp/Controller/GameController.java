@@ -2,61 +2,54 @@ package edu.project.gamereviewapp.Controller;
 
 import edu.project.gamereviewapp.DTO.GameRequestDto;
 import edu.project.gamereviewapp.DTO.GameResponseDto;
-import edu.project.gamereviewapp.Entity.Game;
 import edu.project.gamereviewapp.Enum.Genre;
 import edu.project.gamereviewapp.Service.GameService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/games")
 public class GameController {
     private final GameService gameService;
-    private final ModelMapper modelMapper;
+
 
     @Autowired
-    public GameController(GameService gameService, ModelMapper modelMapper) {
+    public GameController(GameService gameService) {
         this.gameService = gameService;
-        this.modelMapper = modelMapper;
+
     }
 
-    @GetMapping("/{gameId}")
-    public GameResponseDto getGame(@PathVariable Long gameId) {
-//
-//        GameResponseDto gameResponseDto = new GameResponseDto();
-//        gameResponseDto.setGameName(gameService.getGameById(gameId).getName());
-//        gameResponseDto.setDeveloper(gameService.getGameById(gameId).getDeveloper());
-//        gameResponseDto.setReviews(gameService.getGameById(gameId).getReviews());
-//        gameResponseDto.setReleaseDate(gameService.getGameById(gameId).getReleaseDate());
-//        List<Genre> genreList = new ArrayList<>(gameService.getGameById(gameId).getGenre().stream()
-//                .map(it -> Genre.parseString(it.name())).collect(Collectors.toList()));
-//        gameResponseDto.setGenre(genreList);
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<GameResponseDto>> findAllByGenre(@PathVariable Genre genre){
+        return new ResponseEntity<>(gameService.findAllByGenre(genre),HttpStatus.OK);
 
-
-        GameResponseDto gameResponseDto = new GameResponseDto(gameService.getGameById(gameId));
-
-        return gameResponseDto;
+    }
+    @GetMapping
+    public ResponseEntity<List<GameResponseDto>> findAll(){
+        return new ResponseEntity<>(gameService.findAll(),HttpStatus.OK);
     }
 
-    @PostMapping("/")
-    public void createGame(@RequestBody GameRequestDto gameRequestDTO) {
-        gameService.createGame(gameRequestDTO.getGameName(),gameRequestDTO.getDeveloper(),gameRequestDTO.getGenre(),
-                gameRequestDTO.getReleaseDate(),gameRequestDTO.getReviews());
+    @GetMapping("/{id}")
+    public ResponseEntity<GameResponseDto> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(gameService.findById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{gameId}")
-    public GameResponseDto updateGame(@PathVariable Long gameId,@RequestBody GameRequestDto gameRequestDTO) {
-        return new GameResponseDto(gameService.updateGame(gameId,modelMapper.map(gameRequestDTO, Game.class)));
+    @PostMapping
+    public ResponseEntity<GameResponseDto> save(@RequestBody GameRequestDto gameRequestDTO) {
+        return new ResponseEntity<>(gameService.save(gameRequestDTO),HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{gameId}")
-    public void deleteGame(@PathVariable Long gameId) {
-        gameService.deleteGameById(gameId);
+    @PutMapping("/{id}")
+    public ResponseEntity<GameResponseDto> updateGame(@PathVariable Long id, @RequestBody GameRequestDto gameRequestDTO) {
+        return new ResponseEntity<>(gameService.update(id, gameRequestDTO),HttpStatus.OK);
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GameResponseDto> deleteGame(@PathVariable Long id) {
+        return new ResponseEntity<>(gameService.deleteGameById(id),HttpStatus.OK);
     }
 }

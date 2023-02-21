@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Data
 @Entity
 @ToString
+@NoArgsConstructor
 @Table(name = "review")
 public class Review {
     @Id
@@ -16,7 +17,7 @@ public class Review {
     private Long id;
 
 
-    private BigDecimal score;
+    private Double score;
 
 
     private String summary;
@@ -27,14 +28,14 @@ public class Review {
 
     private Long gameId;
 
-    public Review(BigDecimal score, String summary, String similarGames, Long gameId) {
+    public Review(Double score, String summary, String similarGames, Long gameId) {
         this.score = score;
         this.summary = summary;
         this.similarGames = similarGames;
         this.gameId = gameId;
     }
 
-    public Review() {
+    public Review(int i, String nice, String dota, Long id) {
 
     }
 }

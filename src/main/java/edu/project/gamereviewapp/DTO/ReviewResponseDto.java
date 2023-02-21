@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 public class ReviewResponseDto {
     private  Long id;
-    private  BigDecimal score;
+    private  Double score;
     private  String summary;
     private  String similarGames;
     private Long gameId;

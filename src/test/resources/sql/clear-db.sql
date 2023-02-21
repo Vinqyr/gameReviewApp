@@ -1,0 +1,3 @@
+
+DELETE FROM game;
+ALTER TABLE game ALTER column id RESTART;
