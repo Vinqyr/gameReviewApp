@@ -27,8 +27,6 @@ public class GameService {
     }
 
     public List<GameResponseDto> findAll(){
-        if(gameRepository.findAll().isEmpty())
-            throw new GameNotFoundException("Game list is empty");
         List<Game> gameList = gameRepository.findAll();
         return gameList.stream()
                 .map(it -> modelMapper.map(it,GameResponseDto.class))
@@ -37,7 +35,7 @@ public class GameService {
     public GameResponseDto findById(Long id){
         Game game = gameRepository
                 .findById(id).
-                orElseThrow(() -> new GameNotFoundException("Unable to find game by id: " + id));
+                orElseThrow(() -> new GameNotFoundException("Unable to find game by id :: " + id));
         return modelMapper.map(game,GameResponseDto.class);
     }
 
@@ -58,8 +56,9 @@ public class GameService {
     public GameResponseDto update(Long id,GameRequestDto gameRequestDto){
         Game game = gameRepository
                 .findById(id)
-                .orElseThrow(() -> new GameNotFoundException("Unable to find game by id: " + id));
+                .orElseThrow(() -> new GameNotFoundException("Unable to find game by id :: " + id));
         game=modelMapper.map(gameRequestDto,Game.class);
+        game.setId(id);
         gameRepository.save(game);
         return modelMapper.map(game,GameResponseDto.class);
 
@@ -69,8 +68,8 @@ public class GameService {
     public GameResponseDto deleteGameById (Long id){
         Game game = gameRepository
                 .findById(id)
-                .orElseThrow(() -> new GameNotFoundException("Unable to find game by id: " + id));
-        gameRepository.save(game);
+                .orElseThrow(() -> new GameNotFoundException("Unable to find game by id :: " + id));
+        gameRepository.delete(game);
         return modelMapper.map(game,GameResponseDto.class);
     }
 }

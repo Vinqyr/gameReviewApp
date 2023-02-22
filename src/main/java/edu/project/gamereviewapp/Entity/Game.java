@@ -18,7 +18,6 @@ import java.util.List;
 @Entity
 @ToString
 @Table(name = "game")
-
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
