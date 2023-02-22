@@ -24,7 +24,7 @@ public class GameController {
     }
 
     @GetMapping("/genre/{genre}")
-    public ResponseEntity<List<GameResponseDto>> findAllByGenre(@PathVariable Genre genre){
+    public ResponseEntity<List<GameResponseDto>> findAllByGenre(@PathVariable Genre  genre){
         return new ResponseEntity<>(gameService.findAllByGenre(genre),HttpStatus.OK);
 
     }

@@ -17,13 +17,15 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 public class GameResponseDto {
-    private String gameName;
+    private Long id;
+    private String name;
     private String developer;
     private Genre genre;
     private LocalDate releaseDate;
     private List<Review> reviews;
     public GameResponseDto(Game game) {
-        gameName = game.getName();
+        id = game.getId();
+        name = game.getName();
         developer = game.getDeveloper();
 
         genre = game.getGenre();

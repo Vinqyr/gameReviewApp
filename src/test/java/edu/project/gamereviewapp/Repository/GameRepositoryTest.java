@@ -17,8 +17,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
-@Sql(value = {"/sql/clear-db.sql"},executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class GameRepositoryTest {
 
     @Autowired
@@ -37,6 +35,11 @@ class GameRepositoryTest {
     void saveGameTest() {
         //Given
         Game game = new Game("Dota2", "Volvo", Genre.STRATEGY, LocalDate.now(), new ArrayList<Review>());
+        Review review = new Review(9.5,"NICE", "DOTA",game);
+        List<Review> reviewList =new ArrayList<>();
+        reviewList.add(review);
+        game.setReviews(reviewList);
+
         //When
         testGameRepository.save(game);
         //Then
@@ -45,13 +48,14 @@ class GameRepositoryTest {
     }
 
     @Test
+    @Sql(value = {"/sql/clear-db.sql"},executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void findByIdTest() {
         //Given
 
         List<Review> reviewList = new ArrayList<>();
 
-        Game game = new Game(10L,"Dota2", "Volvo", Genre.STRATEGY, LocalDate.now(), reviewList);
-        Review review = new Review(9.5,"NICE", "DOTA",game.getId());
+        Game game = new Game("Dota2", "Volvo", Genre.STRATEGY, LocalDate.now(), reviewList);
+        Review review = new Review(9.5,"NICE", "DOTA",game);
         reviewList.add(review);
 
         //When
@@ -59,6 +63,8 @@ class GameRepositoryTest {
         //Then
         Optional<Game> optionalGame = testGameRepository.findById(game.getId());
         assertThat(optionalGame)
-                .hasValueSatisfying(it -> it.getId().equals(game.getId()));
+                .hasValueSatisfying(it -> it
+                        .getId()
+                        .equals(game.getId()));
     }
 }

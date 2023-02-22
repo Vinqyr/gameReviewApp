@@ -1,5 +1,6 @@
 package edu.project.gamereviewapp.DTO;
 
+import edu.project.gamereviewapp.Entity.Game;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -10,5 +11,5 @@ public class ReviewRequestDto {
     private  Double score;
     private  String summary;
     private  String similarGames;
-    private Long gameId;
+    private Game game;
 }

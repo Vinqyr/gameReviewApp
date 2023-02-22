@@ -1,5 +1,6 @@
 package edu.project.gamereviewapp.DTO;
 
+import edu.project.gamereviewapp.Entity.Game;
 import edu.project.gamereviewapp.Entity.Review;
 import lombok.*;
 
@@ -15,7 +16,7 @@ public class ReviewResponseDto {
     private  Double score;
     private  String summary;
     private  String similarGames;
-    private Long gameId;
+    private Game game;
 
 
 
@@ -25,7 +26,7 @@ public class ReviewResponseDto {
         score=review.getScore();
         summary=review.getSummary();
         similarGames=review.getSimilarGames();
-        gameId=review.getGameId();
+        game=review.getGame();
 
     }
 }

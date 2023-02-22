@@ -41,7 +41,7 @@ public class GameService {
         return modelMapper.map(game,GameResponseDto.class);
     }
 
-    public List<GameResponseDto> findAllByGenre(Genre  genre){
+    public List<GameResponseDto> findAllByGenre(Genre genre){
         List<Game> gameList = gameRepository
                 .findAllByGenre(genre)
                 .orElseThrow(() -> new GameNotFoundException("Game list is empty for this genre :: " + genre.getValue().toUpperCase()));

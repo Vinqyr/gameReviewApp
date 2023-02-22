@@ -1,5 +1,6 @@
 package edu.project.gamereviewapp.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ToString.Exclude
     private Long id;
 
 
@@ -25,14 +25,18 @@ public class Review {
 
     private String similarGames;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id",
+    nullable = false,
+    referencedColumnName = "id")
+    @JsonBackReference
+    private Game game;
 
-    private Long gameId;
-
-    public Review(Double score, String summary, String similarGames, Long gameId) {
+    public Review(Double score, String summary, String similarGames, Game game) {
         this.score = score;
         this.summary = summary;
         this.similarGames = similarGames;
-        this.gameId = gameId;
+        this.game = game;
     }
 
     public Review(int i, String nice, String dota, Long id) {

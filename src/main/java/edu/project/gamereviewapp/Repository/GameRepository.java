@@ -13,9 +13,9 @@ import java.util.Optional;
 @Repository
 public interface GameRepository extends JpaRepository<Game,Long> {
 
-    @Query(value =
-            "SELECT *" +
-            " from game" +
-            " where genre=:genre",nativeQuery = true )
-    Optional<List<Game>> findAllByGenre(@Param(value = "genre")Genre  genre);
+    @Query("select g1_0 from Game g1_0 where g1_0.genre=:genre" )
+    Optional<List<Game>> findAllByGenre(@Param(value = "genre")Genre   genre);
+
+//    Optional<List<Game>> findAllByGenre(Genre genre);
+
 }
