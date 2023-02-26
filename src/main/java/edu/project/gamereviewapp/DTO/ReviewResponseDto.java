@@ -4,8 +4,6 @@ import edu.project.gamereviewapp.Entity.Game;
 import edu.project.gamereviewapp.Entity.Review;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor

@@ -3,8 +3,6 @@ package edu.project.gamereviewapp.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.project.gamereviewapp.DTO.GameRequestDto;
 import edu.project.gamereviewapp.Enum.Genre;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,7 +50,7 @@ class GameControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.id", equalTo(4)))
                 .andExpect(jsonPath("$.name", equalTo("DOS2")))
                 .andExpect(jsonPath("$.developer", equalTo("LARIAN")))
                 .andExpect(jsonPath("$.genre", equalTo(Genre.HORROR.getValue())))
@@ -104,7 +97,7 @@ class GameControllerTest {
         Long nonExistentId = 4L;
         //when then
         mockMvc.perform(get("/games/{id}", nonExistentId))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", equalTo("Unable to find game by id :: " + nonExistentId)));
     }
@@ -133,7 +126,7 @@ class GameControllerTest {
         Long nonExistentId = 4L;
         //when then
         mockMvc.perform(delete("/games/{id}", nonExistentId))
-                .andExpect(status().is(404))
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message", equalTo("Unable to find game by id :: " + nonExistentId)));
     }

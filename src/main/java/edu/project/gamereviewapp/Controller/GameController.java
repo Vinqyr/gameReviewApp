@@ -49,7 +49,7 @@ public class GameController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<GameResponseDto> deleteGame(@PathVariable Long id) {
+    public ResponseEntity<?> deleteGame(@PathVariable Long id) {
         return new ResponseEntity<>(gameService.deleteGameById(id),HttpStatus.OK);
     }
 }

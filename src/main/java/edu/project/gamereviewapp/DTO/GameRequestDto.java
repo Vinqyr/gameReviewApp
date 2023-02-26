@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edu.project.gamereviewapp.Entity.Review;
 import edu.project.gamereviewapp.Enum.Genre;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +17,7 @@ public class GameRequestDto {
     @NotNull
     private Long id;
     @NotBlank
+//    @Pattern(regexp = )
     private String name;
     @NotBlank
     private String developer;

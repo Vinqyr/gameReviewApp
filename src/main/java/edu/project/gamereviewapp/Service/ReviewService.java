@@ -3,7 +3,6 @@ package edu.project.gamereviewapp.Service;
 import edu.project.gamereviewapp.DTO.ReviewRequestDto;
 import edu.project.gamereviewapp.DTO.ReviewResponseDto;
 import edu.project.gamereviewapp.Entity.Review;
-import edu.project.gamereviewapp.Enum.Genre;
 import edu.project.gamereviewapp.Repository.ReviewRepository;
 import edu.project.gamereviewapp.exception.ReviewNotFoundException;
 import org.modelmapper.ModelMapper;
