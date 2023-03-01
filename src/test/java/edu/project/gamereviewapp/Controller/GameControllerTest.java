@@ -36,7 +36,6 @@ class GameControllerTest {
     void saveThenReturnSavedDTO() throws Exception {
         //given
         GameRequestDto requestBody = GameRequestDto.builder()
-                .id(null)
                 .name("DOS2")
                 .developer("LARIAN")
                 .genre(Genre.HORROR)
@@ -114,7 +113,7 @@ class GameControllerTest {
                 .andExpect(jsonPath("$.name", equalTo("DOS2")))
                 .andExpect(jsonPath("$.developer", equalTo("LARIAN")))
                 .andExpect(jsonPath("$.genre", equalTo(Genre.HORROR.getValue())))
-                .andExpect(jsonPath("$.releaseDate", equalTo(LocalDate.now().toString())))
+                .andExpect(jsonPath("$.releaseDate", equalTo(LocalDate.of(2017,9,17).toString())))
                 .andExpect(jsonPath("$.reviews", equalTo(new ArrayList())));
     }
 
@@ -134,10 +133,9 @@ class GameControllerTest {
     @Test
     @DisplayName("Should update entity and return updated DTO")
     @Sql(value = {"/sql/set_up_db.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    void updateExistingEntityThenReturnUpdatedMatchDTO() throws Exception {
+    void updateExistingEntityThenReturnUpdatedGameDTO() throws Exception {
         //given
         GameRequestDto requestBody = GameRequestDto.builder()
-                .id(null)
                 .name("Portal 3")
                 .developer("VOLVO")
                 .genre(Genre.MOBA)

@@ -1,7 +1,7 @@
 package edu.project.gamereviewapp.controllerAdvice;
 
 import edu.project.gamereviewapp.DTO.ErrorDTO;
-import jakarta.servlet.ServletException;
+import edu.project.gamereviewapp.exception.GameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler({edu.project.gamereviewapp.exception.GameNotFoundException.class, ServletException.class})
+    @ExceptionHandler(GameNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleNotFoundException(RuntimeException exception) {
         final ErrorDTO errorDTO = new ErrorDTO(
                 LocalDateTime.now(),

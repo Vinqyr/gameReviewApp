@@ -28,9 +28,10 @@ public class GameService {
 
     public List<GameResponseDto> findAll(){
         List<Game> gameList = gameRepository.findAll();
-        return gameList.stream()
-                .map(it -> modelMapper.map(it,GameResponseDto.class))
+        List<GameResponseDto> listToReturn = gameList.stream()
+                .map(it -> modelMapper.map(it, GameResponseDto.class))
                 .collect(Collectors.toList());
+        return listToReturn;
     }
     public GameResponseDto findById(Long id){
         Game game = gameRepository
@@ -43,21 +44,23 @@ public class GameService {
         List<Game> gameList = gameRepository
                 .findAllByGenre(genre)
                 .orElseThrow(() -> new GameNotFoundException("Game list is empty for this genre :: " + genre.getValue().toUpperCase()));
-        return gameList.stream()
-                .map(it -> modelMapper.map(it,GameResponseDto.class))
+        List<GameResponseDto> gameResponseDtoList = gameList.stream()
+                .map(it -> modelMapper.map(it, GameResponseDto.class))
                 .collect(Collectors.toList());
+        return gameResponseDtoList;
     }
     @Transactional
     public GameResponseDto save(GameRequestDto gameRequestDto){
-        Game game = gameRepository.save(modelMapper.map(gameRequestDto,Game.class));
-        return modelMapper.map(game,GameResponseDto.class);
+        Game game = modelMapper.map(gameRequestDto,Game.class);
+        Game savedGame = gameRepository.save(game);
+        return modelMapper.map(savedGame,GameResponseDto.class);
     }
     @Transactional
     public GameResponseDto update(Long id,GameRequestDto gameRequestDto){
-        Game game = gameRepository
+        Game foundGame = gameRepository
                 .findById(id)
                 .orElseThrow(() -> new GameNotFoundException("Unable to find game by id :: " + id));
-        game=modelMapper.map(gameRequestDto,Game.class);
+        Game game=modelMapper.map(gameRequestDto,Game.class);
         game.setId(id);
         gameRepository.save(game);
         return modelMapper.map(game,GameResponseDto.class);
@@ -69,7 +72,7 @@ public class GameService {
         Game game = gameRepository
                 .findById(id)
                 .orElseThrow(() -> new GameNotFoundException("Unable to find game by id :: " + id));
-        gameRepository.delete(game);
+        gameRepository.deleteById(id);
         return modelMapper.map(game,GameResponseDto.class);
     }
 }

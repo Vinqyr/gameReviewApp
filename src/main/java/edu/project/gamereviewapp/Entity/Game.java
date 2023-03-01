@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @Entity
 @ToString
+@Builder
 @Table(name = "game")
 public class Game {
     @Id

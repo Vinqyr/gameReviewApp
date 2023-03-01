@@ -9,71 +9,104 @@ import edu.project.gamereviewapp.exception.GameNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class GameServiceTest {
 
     @Mock
     private GameRepository gameRepository;
-    @Mock
+    @Autowired
     private ModelMapper modelMapper;
-
+    @Autowired
     private GameService testGameService;
 
 
     @BeforeEach
-    void setUp(){
-        testGameService = new GameService(gameRepository,modelMapper);
+    void setUp() {
+        testGameService = new GameService(gameRepository, modelMapper);
     }
-
 
 
     @Test
     void shouldSave() {
-        //Given
-        Game gameBeforeSave= new Game("WoW","Blizzard", Genre.HORROR
-                , LocalDate.now(),new ArrayList<>());
-        Game gameAfterSave= new Game(1L,"WoW","Blizzard", Genre.HORROR
-                , LocalDate.now(),new ArrayList<>());
-        GameResponseDto gameResponseDto = Mockito.mock(GameResponseDto.class);
-        GameRequestDto gameRequestDto= Mockito.mock(GameRequestDto.class);
+//        //Given
+        Game gameToSave = Game.builder()
+                .name("WoW")
+                .developer("Blizzard")
+                .genre(Genre.HORROR)
+                .releaseDate(LocalDate.now())
+                .reviews(new ArrayList<>())
+                .build();
+        Game gameAfterSave = Game.builder()
+                .id(1L)
+                .name("WoW")
+                .developer("Blizzard")
+                .genre(Genre.HORROR)
+                .releaseDate(LocalDate.now())
+                .reviews(new ArrayList<>())
+                .build();
+        GameResponseDto expectedGame = modelMapper.map(gameAfterSave, GameResponseDto.class);
+        GameRequestDto requestDto = modelMapper.map(gameToSave, GameRequestDto.class);
 
-        when(modelMapper.map(gameRequestDto,Game.class)).thenReturn(gameBeforeSave);
-        when(gameRepository.save(gameBeforeSave)).thenReturn(gameAfterSave);
-        when(modelMapper.map(gameAfterSave,GameResponseDto.class)).thenReturn(gameResponseDto);
+        when(gameRepository.save(any(Game.class))).thenReturn(gameToSave);
+
         //When
-        testGameService.save(gameRequestDto);
+        GameResponseDto actual = testGameService.save(requestDto);
         //Then
-        verify(modelMapper).map(gameRequestDto,Game.class);
-        verify(gameRepository).save(gameBeforeSave);
-        verify(modelMapper).map(gameAfterSave,GameResponseDto.class);
+        assertThat(actual).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectedGame);
+        verify(gameRepository, times(1)).save(any(Game.class));
     }
+
     @Test
     void shouldFindAll() {
 
-        Game game = Mockito.mock(Game.class);
-        GameResponseDto gameResponseDto = mock(GameResponseDto.class);
+        Game foundGame1 = Game.builder()
+                .id(1L)
+                .name("WoW")
+                .developer("Blizzard")
+                .genre(Genre.HORROR)
+                .releaseDate(LocalDate.of(2014, 5, 15))
+                .reviews(new ArrayList<>())
+                .build();
+        Game foundGame2 = Game.builder()
+                .id(2L)
+                .name("NotWoW")
+                .developer("NotBlizzard")
+                .genre(Genre.STRATEGY)
+                .releaseDate(LocalDate.of(2017, 5, 22))
+                .reviews(new ArrayList<>())
+                .build();
         List<Game> gameList = new ArrayList<>();
-        gameList.add(game);
+        gameList.add(foundGame1);
+        gameList.add(foundGame2);
         when(gameRepository.findAll()).thenReturn(gameList);
-        when(modelMapper.map(game,GameResponseDto.class)).thenReturn(gameResponseDto);
 
-        testGameService.findAll();
+        List<GameResponseDto> expectedList = gameList.stream()
+                .map(it -> modelMapper.map(it, GameResponseDto.class))
+                .collect(Collectors.toList());
 
-        verify(gameRepository).findAll();
-        gameList.stream().map(it -> verify(modelMapper.map(it,GameResponseDto.class)));
+        List<GameResponseDto> actualList = testGameService.findAll();
+
+        assertThat(expectedList).usingRecursiveComparison().isEqualTo(actualList);
+        assertEquals(expectedList.size(), 2);
+        verify(gameRepository, times(1)).findAll();
     }
 
     @Test
@@ -84,83 +117,107 @@ class GameServiceTest {
 
         when(gameRepository.findById(nonExistentId)).thenReturn(nonExistentGameEntity);
         //when
-
-        //then
         assertThrows(
                 GameNotFoundException.class,
                 () -> testGameService.findById(nonExistentId));
+        //then
+        verify(gameRepository, times(1)).findById(nonExistentId);
     }
 
     @Test
     void shouldFindById() {
         //given
         Long existingId = 1L;
-        Optional<Game> existingGameEntity = Optional.of(mock(Game.class));
-        GameResponseDto gameResponseDto = mock(GameResponseDto.class);
+        Optional<Game> existingGameEntity = Optional.of(Game.builder()
+                .id(existingId)
+                .name("DOS2")
+                .developer("Larian")
+                .reviews(new ArrayList<>())
+                .genre(Genre.STRATEGY)
+                .releaseDate(LocalDate.of(2002, 12, 12))
+                .build());
+
+        GameResponseDto expectedGame = modelMapper.map(existingGameEntity.get(), GameResponseDto.class);
 
         when(gameRepository.findById(existingId)).thenReturn(existingGameEntity);
-        when(modelMapper.map(existingGameEntity.get(),GameResponseDto.class)).thenReturn(gameResponseDto);
         //when
-        testGameService.findById(existingId);
+        GameResponseDto actualGame = testGameService.findById(existingId);
         //then
-        verify(gameRepository).findById(existingId);
-        verify(modelMapper).map(existingGameEntity.get(),GameResponseDto.class);
+        assertThat(expectedGame).usingRecursiveComparison().isEqualTo(actualGame);
+        verify(gameRepository,times(1)).findById(existingId);
     }
 
     @Test
     void shouldEitherDeleteByIdOrThrowException() {
         //given
         Long nonExistentId = 0L;
-        Optional<Game> nonExistentMatchEntity = Optional.empty();
+        Optional<Game> nonExistentGameEntity = Optional.empty();
 
         Long existingId = 1L;
-        Optional<Game> existingGameEntity = Optional.of(mock(Game.class));
-        GameResponseDto gameResponseDto = mock(GameResponseDto.class);
+        Optional<Game> existingGameEntity = Optional.of(Game.builder()
+                .id(existingId)
+                .name("DOS2")
+                .developer("Larian")
+                .reviews(new ArrayList<>())
+                .genre(Genre.STRATEGY)
+                .releaseDate(LocalDate.of(2002, 12, 12))
+                .build());
+        GameResponseDto expectedGame = modelMapper.map(existingGameEntity.get(),GameResponseDto.class);
 
-        when(gameRepository.findById(nonExistentId)).thenReturn(nonExistentMatchEntity);
+        when(gameRepository.findById(nonExistentId)).thenReturn(nonExistentGameEntity);
         when(gameRepository.findById(existingId)).thenReturn(existingGameEntity);
-        when(modelMapper.map(existingGameEntity.get(),GameResponseDto.class)).thenReturn(gameResponseDto);
+        doNothing().when(gameRepository).deleteById(existingId);
         //when
-        testGameService.deleteGameById(existingId);
-        //then
-        verify(gameRepository).findById(existingId);
-        verify(gameRepository).delete(existingGameEntity.get());
-        verify(modelMapper).map(existingGameEntity.get(),GameResponseDto.class);
-
         assertThrows(
                 GameNotFoundException.class,
                 () -> testGameService.deleteGameById(nonExistentId));
+        GameResponseDto actualGame = testGameService.deleteGameById(existingId);
+        //then
+        assertThat(expectedGame).usingRecursiveComparison().isEqualTo(actualGame);
+        verify(gameRepository, times(1)).findById(existingId);
+        verify(gameRepository, times(1)).deleteById(existingId);
+        verify(gameRepository, times(1)).findById(nonExistentId);
+        verify(gameRepository, times(0)).deleteById(nonExistentId);
+
 
     }
 
     @Test
-    void shouldEitherUpdateOrThrowException() {
+    void shouldUpdate() {
         //given
-        Long nonExistentId = 0L;
-        Optional<Game> nonExistentGameEntity = Optional.empty();
-
         Long existingId = 1L;
-        Optional<Game> existingGameEntity = Optional.of(mock(Game.class));
-        GameRequestDto gameRequestDto = mock(GameRequestDto.class);
-        GameResponseDto gameResponseDto = mock(GameResponseDto.class);
-        Game game = Mockito.mock(Game.class);
+        Optional<Game> existingGameEntity = Optional.of(Game.builder()
+                .id(existingId)
+                .name("DOS2")
+                .developer("Larian")
+                .reviews(new ArrayList<>())
+                .genre(Genre.STRATEGY)
+                .releaseDate(LocalDate.of(2002, 12, 12))
+                .build());
+        GameRequestDto updateRequestDto = GameRequestDto.builder()
+                .name("DOS2")
+                .developer("Larian")
+                .reviews(new ArrayList<>())
+                .genre(Genre.RPG)
+                .releaseDate(LocalDate.of(2018,12,15))
+                .build();
+        Game gameForSave = modelMapper.map(updateRequestDto, Game.class);
+        Game gameAfterSave = modelMapper.map(gameForSave,Game.class);
+        gameAfterSave.setId(existingId);
 
-        when(gameRepository.findById(nonExistentId)).thenReturn(nonExistentGameEntity);
+        GameResponseDto expectedGame = modelMapper.map(gameForSave,GameResponseDto.class);
+        expectedGame.setId(existingId);
+
         when(gameRepository.findById(existingId)).thenReturn(existingGameEntity);
-        when(modelMapper.map(gameRequestDto,Game.class)).thenReturn(game);
-        when(gameRepository.save(game)).thenReturn(game);
-        when(modelMapper.map(game,GameResponseDto.class)).thenReturn(gameResponseDto);
+        when(gameRepository.save(any(Game.class))).thenReturn(gameAfterSave);
+        doReturn(gameAfterSave).when(gameRepository).save(gameForSave);
 
         //when
-        testGameService.update(existingId, gameRequestDto);
+        GameResponseDto actualGame = testGameService.update(existingId, updateRequestDto);
         //then
-        verify(gameRepository).findById(existingId);
-        verify(gameRepository).save(game);
-        verify(modelMapper).map(gameRequestDto,Game.class);
-        verify(modelMapper).map(game,GameResponseDto.class);
+        assertThat(expectedGame).usingRecursiveComparison().isEqualTo(actualGame);
+        verify(gameRepository,times(1)).findById(existingId);
+        verify(gameRepository,times(1)).save(any(Game.class));
 
-        assertThrows(
-                GameNotFoundException.class,
-                () -> testGameService.deleteGameById(nonExistentId));
     }
 }

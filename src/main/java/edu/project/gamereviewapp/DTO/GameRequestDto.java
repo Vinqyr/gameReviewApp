@@ -6,16 +6,18 @@ import edu.project.gamereviewapp.Entity.Review;
 import edu.project.gamereviewapp.Enum.Genre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class GameRequestDto {
-    @NotNull
-    private Long id;
+
     @NotBlank
 //    @Pattern(regexp = )
     private String name;
